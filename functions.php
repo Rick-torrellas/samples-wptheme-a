@@ -134,13 +134,69 @@ function xample_file_shortcode() {
 }
 add_shortcode('latest_cars', 'xample_file_shortcode');
 
+function xample_file_shortcode_complex($atts, $content = null, $tag = '')
+{
 
+	ob_start();
 
+	print_r($content);
 
+	set_query_var('attributes', $atts);
 
+	get_template_part('includes/latest', 'cars');
 
+	return ob_get_clean();
 
+}
+add_shortcode('latest_cars', 'xample_file_shortcode_complex');
 
+function xample_search_query() {
+    $paged = (get_query_var('paged') ? get_query_var('paged') : 1);
+    $args = [
+        'paged' => $paged,
+        'post_type' => 'cars',
+        'posts_per_page' => 1,
+        'tax_query' => [],
+        'meta_query' => [
+            'relation' => 'AND',
+        ] 
+        ];
+        if (isset($get_keyword)) {
+            if (!empty($get_keyword)) {
+                $args['s'] = sanitize_text_field($get_keyword);
+            }
+        }
+        if (isset($get_brand)) {
+            if(!empty($get_brand)) {
+                $args['tax_query'][] = [
+                    'taxonomy' => 'brands',
+                    'field' => 'slug',
+                    'terms' => sanitize_text_field([$get_brand])
+                ];
+            }
+        }
+        if (isset($get_price_above)) {
+            if(!empty($get_price_above)) {
+                $args['meta_query'][] = [
+                    'key' => 'price',
+                    'value' => sanitize_text_field($get_price_above),
+                    'type' => 'numeric',
+                    'compare' => '>='
+                ];
+            }
+        }
+        if (isset($get_price_below)) {
+            if(!empty($get_price_below)) {
+                $args['meta_query'][] = [
+                    'key' => 'price',
+                    'value' => sanitize_text_field($get_price_below),
+                    'type' => 'numeric',
+                    'compare' => '<='
+                ];
+            }
+        }
+        return new WP_Query($args);
+}
 
 
 

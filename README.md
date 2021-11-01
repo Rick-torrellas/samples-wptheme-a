@@ -6,6 +6,8 @@
 
 ## Description
 
+IMPORTANTE: los permalinks deben estar establecidos en "Post name", para que alguno de los archivos de busqueda funcionen apropiadamente.
+
 <h2 id="nav">Nav🏠 </h2>
 
 * [Data Model 💾](#data-model)
